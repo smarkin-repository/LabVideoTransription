@@ -22,6 +22,8 @@ def create_dialogue(transcript_path, speakers_path, output_path, short=False):
     utterances = transcript.get("utterances")
     if not isinstance(utterances, list):
         raise ValueError("Transcript must contain an utterances array.")
+    if not utterances and transcript.get("text"):
+        raise ValueError("Transcript has text but no utterances; creating a dialogue would lose content.")
     if not isinstance(speakers, dict):
         raise ValueError("Speakers file must contain an object.")
 

@@ -7,6 +7,8 @@ from pathlib import Path
 from assemblyai import Client, Settings
 from assemblyai.prerecorded.v2 import Transcriber, TranscriptionConfig
 
+from create_dialogue import create_dialogue
+
 api_key = os.getenv("ASSEMBLYAI_API_KEY")
 if not api_key:
     sys.exit("Missing ASSEMBLYAI_API_KEY environment variable.")
@@ -101,8 +103,20 @@ try:
         encoding="utf-8",
     )
 
-    print(output_json)
-    print(f"Saved transcript to: {output_path}", file=sys.stderr)
-    print(f"Speaker names and roles: {speakers_path}", file=sys.stderr)
+    print(f"Transcription completed: {transcript.id}")
+    print(f"Language: {transcript.language_code}; utterances: {len(utterances)}")
+    print(f"Transcript JSON: {output_path}")
+    print(f"Speaker names and roles: {speakers_path}")
+
+    dialogue_path = video_path.with_suffix(".dialogue.md")
+    try:
+        create_dialogue(output_path, speakers_path, dialogue_path)
+    except (OSError, ValueError, AttributeError, TypeError) as error:
+        sys.exit(
+            f"Transcript JSON and speakers were saved, but dialogue conversion failed: {error}\n"
+            "Fix the conversion issue and run create_dialogue.py locally; "
+            "transcribing the recording again is not required."
+        )
+    print(f"Dialogue: {dialogue_path}")
 except Exception as error:
     sys.exit(f"Transcription failed: {error}")
