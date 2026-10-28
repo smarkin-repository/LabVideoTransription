@@ -1,0 +1,21 @@
+# Python environment and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Secrets and local agent configuration
+.env
+.env.*
+!.env.example
+.codex/
+
+# Recordings, transcripts, generated results and temporary files
+/input/
+/output/
+/tmp/
+
+# Operating system files
+.DS_Store
+Thumbs.db
